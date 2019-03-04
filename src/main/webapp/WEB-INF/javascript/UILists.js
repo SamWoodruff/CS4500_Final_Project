@@ -15,9 +15,10 @@ Sortable.create(instructionList, {
     animation: 150,
     sort: false // To disable sorting: set sort to false
 });
-// Removal list
-Sortable.create(removalList, {
-    group: {
-        put:true
-    },
+Sortable.create(devnull, {//Removal List
+    group: "shared",
+
+    onAdd: function (evt) {
+        this.el.removeChild(evt.item);
+    }
 });

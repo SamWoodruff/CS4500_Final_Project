@@ -12,7 +12,6 @@
     <title>Compiler-UI</title>
 
     <style>
-
         /* Split the screen in half */
         .split {
             height: 100%;
@@ -58,7 +57,7 @@
             <div id="editorList" class="list-group">
                 <div class="list-group-item">Drop Instructions Here: </div>
             </div>
-            <div id="removalList" class="list-group">
+            <div id="devnull" class="list-group">
                 <div class="list-group-item">Remove </div>
             </div>
 
