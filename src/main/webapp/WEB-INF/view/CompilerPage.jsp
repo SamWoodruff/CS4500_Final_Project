@@ -54,24 +54,27 @@
         <div class="centered">
             <h3>Compiler Page</h3>
             <h2>Editor</h2>
-            <div id="editorList" class="list-group">
-                <div class="list-group-item">Drop Instructions Here: </div>
-            </div>
-            <div id="devnull" class="list-group">
-                <div class="list-group-item">Remove </div>
-            </div>
+            <br>
+            Drop instructions here:
+            <br>
+            <ul id="editorList" class="list-group">
+            </ul>
 
         </div>
     </div>
     <div class="split right">
         <div class="centered">
             <h3>Instruction List</h3>
+            Drag tile here to remove:
+            <div id="devnull" class="list-group">
 
-            <div id="instructionList" class="list-group">
-            <c:forEach items="${instructions}" var="ins">
-                    <div class="list-group-item">${ins.name}</div>
-            </c:forEach>
             </div>
+
+            <ul id="instructionList" class="list-group">
+            <c:forEach items="${instructions}" var="ins">
+                    <li class="list-group-item">${ins.name}</li>
+            </c:forEach>
+            </ul>
 
         </div>
     </div>
