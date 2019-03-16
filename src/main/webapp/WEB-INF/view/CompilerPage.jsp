@@ -10,8 +10,17 @@
 <html>
 <head>
     <title>Compiler-UI</title>
-
     <style>
+        .form {
+            border: 1px solid black;
+            text-align: center;
+            outline: none;
+            min-width:4px;
+        }
+
+        span {
+            display: inline-block;
+        }
         /* Split the screen in half */
         .split {
             height: 100%;
@@ -42,23 +51,84 @@
 
         }
     </style>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"/>
+    <!-- Sortable.js -->
+    <script src="https://raw.githack.com/SortableJS/Sortable/master/Sortable.js"></script>
+    <!--jQuery from google CDN(Content Delievery Network)-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src = "https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+    <script>
+        $(document).ready(function(){
+            /*$("button").click(function(){
+                var editorList = $('#editorList li').map(function(){ return $(this).text(); });
+                $.ajax({
+                    type: "POST",
+                    url: "/retrieveList",
+                    data: {
+                        "editorList": editorList.toArray()
+                    },
+                    success: function (data) {
+                        document.open();
+                        document.write(data);
+                        document.close();
+                    },
+                    error: function (e) {
+                        alert('error ' + e);
+                    }
+                });
+            })
+
+            });*/
+
+        });
+
+
+    function processDrop(){
+        var editorList = $('#editorList li').map(function(){ return $(this).text(); });
+        $.ajax({
+            type: "POST",
+            url: "/retrieveList",
+            data: {
+                "editorList": editorList.toArray()
+            },
+            success: function (data) {
+                document.open();
+                document.write(data);
+                document.close();
+            },
+            error: function (e) {
+                alert('error ' + e);
+            }
+        });
+    }
+
+    </script>
 </head>
 <body>
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"/>
-
-<!-- Latest Sortable -->
-<script src="https://raw.githack.com/SortableJS/Sortable/master/Sortable.js"></script>
-
    <div class="split left">
         <div class="centered">
             <h3>Compiler Page</h3>
             <h2>Editor</h2>
             <br>
-            Drop instructions here:
-            <br>
-            <ul id="editorList" class="list-group">
+            <div ondrop="processDrop()">
+            <ul id="editorList" class="list-group" ondrop="drop(event)">
+                <c:if test="${empty selectedInstructions}">
+                    Drop instructions here:
+                </c:if>
+                <c:if test="${!empty selectedInstructions}">
+                    <c:forEach items="${selectedInstructions}" var="ins">
+                        <li draggable="true" class="list-group-item">${ins.name}
+                            <c:forEach items="${ins.argCounts}" var="ins2">
+                            <cell></cell><span> <input id="input" class="form"  type="text" style="width: 15px;" onkeypress="this.style.width = ((this.value.length + 1) * 15) + 'px';" placeholder=""></span></cell>
+                            </c:forEach>
+                        </li>
+                    </c:forEach>
+                </c:if>
             </ul>
+            </div>
+            <button>Execute</button>
 
         </div>
     </div>
@@ -82,3 +152,5 @@
 
 </body>
 </html>
+<!--<input type="text" maxlength="8" style="width: 15px; height:20px;">-->
+<!--<span> <input id="input" class="form"  type="text" style="width: 15px;" onkeypress="this.style.width = ((this.value.length + 1) * 15) + 'px';" placeholder=""></span>-->

@@ -1,13 +1,24 @@
 package com.compiler.classes;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class instruction {
-    private String name;
     private int argCount;
+    private String name;
     private int argument;
     private int argument2;
+
+    public int getArgCount() {
+        return argCount;
+    }
+
+    ArrayList<Integer> argCounts;
     private int lineNumber;
+    List<String> selectedInstructions;
+    public ArrayList<Integer> getArgCounts() {
+        return argCounts;
+    }
 
     public instruction(){
 
@@ -18,10 +29,13 @@ public class instruction {
     }
 
     public instruction(String name, int argCount) {
+        argCounts = new ArrayList<>();
+        for(int i = 0; i < argCount; i++){
+            argCounts.add(0);
+        }
         this.name = name;
         this.argCount = argCount;
     }
-
 
     public String getName() {
         return name;
@@ -31,9 +45,9 @@ public class instruction {
         this.name = name;
     }
 
-    public int getArgCount() {
+   /* public static int getArgCount() {
         return argCount;
-    }
+    }*/
 
     public void setArgCount(int argCount) {
         this.argCount = argCount;
