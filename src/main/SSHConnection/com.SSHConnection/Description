@@ -1,0 +1,21 @@
+ConnectSSH.Java
+
+Description:
+    Java class that opens a connection to delmar.umsl.edu
+    Two channel types can be opened currently: Shell & Sftp
+
+    Shell Channel:
+        Interacts with server shell and allows for IO from users' keyboard
+        This will be used to enter any parameters requested by .asm program
+
+    Sftp Channel:
+        Allows the ability to send .asm file to directory on server where virtual Machine is located
+
+
+    Function calls must be invoked in the following order
+        1.) Create a new ConnectSSH object
+        2.) connectSession()
+        3.) connectSftpChannel()
+        4.) sendFile()
+        5.) disconnectSftpChannel()
+        6.) connectShellChannel
