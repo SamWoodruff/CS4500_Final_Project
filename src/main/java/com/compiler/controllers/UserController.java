@@ -16,16 +16,22 @@ import java.util.Map;
 
 @Controller
 public class UserController {
+
     @RequestMapping("/")
     public String home(Map<String, Object> model, HttpSession session) {
         System.out.println("in spring\n");
+
+        //Create new instruction object
         instruction instruction = new instruction();
+        //Populate instruction object with list of instructions
         ArrayList<instruction> instructions = instruction.instructionList();
+        //add instructions to session to use in CompilerPage.jsp
         session.setAttribute("instructions",instructions);
         ArrayList<instruction> selectedInstructions = new ArrayList<>();
         session.setAttribute("selectedInstructions",selectedInstructions);
         return "CompilerPage";
     }
+
     @RequestMapping(value="/retrieveList", method = RequestMethod.POST)
     public String getList(@RequestParam(value="editorList[]")String[] editorList, Map<String, Object> model, HttpSession session) {
         System.out.println("-----FROM JAVASCRIPT-----");

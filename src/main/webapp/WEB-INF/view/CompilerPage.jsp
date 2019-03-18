@@ -139,7 +139,7 @@
             <div id="devnull" class="list-group">
 
             </div>
-
+            <!--Lists all instructions to choose from-->
             <ul id="instructionList" class="list-group">
             <c:forEach items="${instructions}" var="ins">
                     <li class="list-group-item">${ins.name}</li>

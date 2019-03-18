@@ -81,15 +81,11 @@ public class ConnectSSH {
     private static String filename="hello.txt";
     private static String fileToSend="/Users/tdkxc6/testSFTP/hello.txt";
     
-    
 
-    
-    
     //no-arg constructor
     public void ConnectSSH() {
     
     }
-
 
 
     /**

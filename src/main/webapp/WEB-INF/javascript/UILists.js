@@ -1,11 +1,10 @@
-// Editor list
+// Editor list (left)
 Sortable.create(editorList, {
     group: 'shared',
     animation: 150
 });
-// Instruction list
 
-
+// Instruction list (right)
 Sortable.create(instructionList, {
     group: {
         name: 'shared',
@@ -15,7 +14,9 @@ Sortable.create(instructionList, {
     animation: 150,
     sort: false // To disable sorting: set sort to false
 });
-Sortable.create(devnull, {//Removal List
+
+//Removal List
+Sortable.create(devnull, {
     group: "shared",
 
     onAdd: function (evt) {
