@@ -1,4 +1,4 @@
-/*
+package com.SSHConnection;/*
  * Connect to delmar.umsl.edu via SSH
  * Send .asm file to test
  * Test .asm file with Assembly Virtual Machine
@@ -10,6 +10,10 @@
  * Question: Should we ask user's to enter their own ssoid credentials?
  *      RISKS: We would need to check if virtual machine exists, then build
  *             through SSH connection
+ *
+ *
+ *             TODO: for testing purposes, enter your own credentials and comment out line 186
+ *             This will connect you to the shell but won't execute any scripts (script is in my personal directory)
  */
 
 import com.jcraft.jsch.*;
@@ -200,7 +204,7 @@ public class ConnectSSH {
      *
      * @param command
      * @throws IOException
-     * @throws com.jcraft.jsch.JSchException
+     * @throws JSchException
      */
     public void executeCommand (String command) throws IOException, JSchException {
         PrintStream ps = new PrintStream(myChannel.getOutputStream());
