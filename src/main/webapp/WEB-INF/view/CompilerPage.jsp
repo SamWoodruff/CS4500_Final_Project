@@ -18,6 +18,14 @@
             min-width:4px;
         }
 
+        #output {
+            border-style: solid;
+            border-width: 2px;
+            margin-top: 20px;
+            width: 100%;
+            height: 200px;
+        }
+
         span {
             display: inline-block;
         }
@@ -84,25 +92,31 @@
 
         });
 
+        function ConnectSSH() {
+            $.ajax({
+               type: "POST",
+               url: "/serverConnect",
+            });
+        }
 
-    function processDrop(){
-        var editorList = $('#editorList li').map(function(){ return $(this).text(); });
-        $.ajax({
-            type: "POST",
-            url: "/retrieveList",
-            data: {
-                "editorList": editorList.toArray()
-            },
-            success: function (data) {
-                document.open();
-                document.write(data);
-                document.close();
-            },
-            error: function (e) {
-                alert('error ' + e);
-            }
-        });
-    }
+        function processDrop(){
+            var editorList = $('#editorList li').map(function(){ return $(this).text(); });
+            $.ajax({
+                type: "POST",
+                url: "/retrieveList",
+                data: {
+                    "editorList": editorList.toArray()
+                },
+                success: function (data) {
+                    document.open();
+                    document.write(data);
+                    document.close();
+                },
+                error: function (e) {
+                    alert('error ' + e);
+                }
+            });
+        }
 
     </script>
 </head>
@@ -128,8 +142,12 @@
                 </c:if>
             </ul>
             </div>
-            <button>Execute</button>
+            <button onclick="ConnectSSH()">Execute</button>
 
+            <br>
+            <div id="output">
+                Console output here.
+            </div>
         </div>
     </div>
     <div class="split right">
@@ -139,7 +157,7 @@
             <div id="devnull" class="list-group">
 
             </div>
-
+            <!--Lists all instructions to choose from-->
             <ul id="instructionList" class="list-group">
             <c:forEach items="${instructions}" var="ins">
                     <li class="list-group-item">${ins.name}</li>

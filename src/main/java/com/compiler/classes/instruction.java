@@ -4,30 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class instruction {
+
     private int argCount;
     private String name;
     private int argument;
     private int argument2;
-
-    public int getArgCount() {
-        return argCount;
-    }
-
     ArrayList<Integer> argCounts;
     private int lineNumber;
     List<String> selectedInstructions;
-    public ArrayList<Integer> getArgCounts() {
-        return argCounts;
-    }
+
 
     public instruction(){
-
+        //no arg constructor
     }
 
     public instruction(String name) {
         this.name = name;
     }
 
+    //Set name and number of arguments to an instruction
     public instruction(String name, int argCount) {
         argCounts = new ArrayList<>();
         for(int i = 0; i < argCount; i++){
@@ -37,6 +32,8 @@ public class instruction {
         this.argCount = argCount;
     }
 
+
+    /*--------Getters & Setters--------*/
     public String getName() {
         return name;
     }
@@ -48,6 +45,14 @@ public class instruction {
    /* public static int getArgCount() {
         return argCount;
     }*/
+
+    public int getArgCount() {
+        return argCount;
+    }
+
+    public ArrayList<Integer> getArgCounts() {
+        return argCounts;
+    }
 
     public void setArgCount(int argCount) {
         this.argCount = argCount;
@@ -69,6 +74,7 @@ public class instruction {
         this.argument2 = argument2;
     }
 
+    //List of all instructions
     public ArrayList<instruction> instructionList(){
         ArrayList<instruction> instructions = new ArrayList<>();
         instruction temp;

@@ -1,31 +1,37 @@
 package com.compiler.controllers;
 
+import com.SSHConnection.ConnectSSH;
 import com.compiler.classes.instruction;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.SftpException;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
-import javax.management.DynamicMBean;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 @Controller
 public class UserController {
+
     @RequestMapping("/")
     public String home(Map<String, Object> model, HttpSession session) {
         System.out.println("in spring\n");
+
+        //Create new instruction object
         instruction instruction = new instruction();
+        //Populate instruction object with list of instructions
         ArrayList<instruction> instructions = instruction.instructionList();
+        //add instructions to session to use in CompilerPage.jsp
         session.setAttribute("instructions",instructions);
         ArrayList<instruction> selectedInstructions = new ArrayList<>();
         session.setAttribute("selectedInstructions",selectedInstructions);
         return "CompilerPage";
     }
+
     @RequestMapping(value="/retrieveList", method = RequestMethod.POST)
     public String getList(@RequestParam(value="editorList[]")String[] editorList, Map<String, Object> model, HttpSession session) {
         System.out.println("-----FROM JAVASCRIPT-----");
@@ -59,9 +65,23 @@ public class UserController {
 
         return "CompilerPage";
     }
+
     @RequestMapping(value="/addToEditor", method = RequestMethod.POST)
     public String getInstruction(@RequestParam(value="instruction") String instruction, Map<String, Object> model) {
         System.out.println(instruction);
         return "CompilerPage";
+    }
+
+    @RequestMapping(value="/serverConnect", method = RequestMethod.POST)
+    public void connectSSH() throws IOException, SftpException {
+        ConnectSSH connection = new ConnectSSH();
+        try {
+            connection.connectSession();
+            connection.connectShellChannel();
+
+
+        } catch (JSchException e) {
+            System.out.println(e);
+        }
     }
 }
