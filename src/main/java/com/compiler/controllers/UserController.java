@@ -185,7 +185,6 @@ public class UserController {
                             }
                         }
                         selectedInstructions.add(ins);
-                       System.out.println("INSTRUCTION HERE");
                        continue;
                     }
                 }
