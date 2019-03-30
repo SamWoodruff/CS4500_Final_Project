@@ -55,9 +55,6 @@
             border: 5px solid gray;
             padding: 10px;
         }
-        .instructionBorder{
-
-        }
     </style>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"/>
@@ -67,45 +64,23 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src = "https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+
     <script>
-        $(document).ready(function(){
-            /*$("button").click(function(){
-                var editorList = $('#editorList li').map(function(){ return $(this).text(); });
-                $.ajax({
-                    type: "POST",
-                    url: "/retrieveList",
-                    data: {
-                        "editorList": editorList.toArray()
-                    },
-                    success: function (data) {
-                        document.open();
-                        document.write(data);
-                        document.close();
-                    },
-                    error: function (e) {
-                        alert('error ' + e);
-                    }
-                });
-            })
-
-            });*/
-
-        });
-
         function ConnectSSH() {
             $.ajax({
                type: "POST",
                url: "/serverConnect",
             });
         }
-
         function processDrop(){
             var editorList = $('#editorList li').map(function(){ return $(this).text(); });
+            var arguments = $("#editorList li input[name='arg']").map(function(){return $(this).val();}).get();
             $.ajax({
                 type: "POST",
                 url: "/retrieveList",
                 data: {
-                    "editorList": editorList.toArray()
+                    "editorList": editorList.toArray(),
+                    "arguments": arguments.toString()
                 },
                 success: function (data) {
                     document.open();
@@ -117,14 +92,43 @@
                 }
             });
         }
-
+        function passArgs(){
+            var arguments = $("#editorList li input[name='arg']").map(function(){return $(this).val();}).get();
+            $.ajax({
+                type: "POST",
+                url: "/passArgs",
+                data: {
+                    "arguments": arguments
+                },
+                success: function (data) {
+                    document.open();
+                    document.write(data);
+                    document.close();
+                },
+                error: function (e) {
+                    alert('error ' + e);
+                }
+            });
+        }
+        function exportFile() {
+            var arguments = $("#editorList li input[name='arg']").map(function(){return $(this).val();}).get();
+            $.ajax({
+                type: "POST",
+                url: "/createFile",
+                data: {
+                    "arguments": arguments
+                },
+                success: function (data) {
+                    window.location.replace("/downloadFile")
+                }
+            });
+        }
     </script>
 </head>
 <body>
    <div class="split left">
-        <div class="centered">
-            <h3>Compiler Page</h3>
-            <h2>Editor</h2>
+            <h3>Janikow's Assembly Interpreter</h3>
+            <h2>Tile editor</h2>
             <br>
             <div ondrop="processDrop()">
             <ul id="editorList" class="list-group" ondrop="drop(event)">
@@ -133,18 +137,48 @@
                 </c:if>
                 <c:if test="${!empty selectedInstructions}">
                     <c:forEach items="${selectedInstructions}" var="ins">
-                        <li draggable="true" class="list-group-item">${ins.name}
-                            <c:forEach items="${ins.argCounts}" var="ins2">
-                            <cell></cell><span> <input id="input" class="form"  type="text" style="width: 15px;" onkeypress="this.style.width = ((this.value.length + 1) * 15) + 'px';" placeholder=""></span></cell>
-                            </c:forEach>
+                        <li draggable="true" class="list-group-item">
+                            ${ins.lineNum})
+                            <c:if test="${ins.name != 'Variable' && ins.name != 'Label:'}">
+                                ${ins.name}
+                            </c:if>
+                            <c:if test="${!empty ins.args}">
+                                <c:forEach items="${ins.args}" var="ins2">
+                                    <c:if test="${ins.name != 'Label:'}">
+                                        <cell></cell><span> <input name="arg" id="arg" class="form" type="text" style="width: 15px;" onkeypress="this.style.width = ((this.value.length + 1) * 15) + 'px';" placeholder=""
+                                                                    value="${ins2}"></span></cell>
+                                    </c:if>
+                                    <c:if test="${ins.name == 'Label:'}">
+                                        <cell></cell><span> <input name="arg" id="arg" class="form" type="text" style="width: 15px;" onkeypress="this.style.width = ((this.value.length + 1) * 15) + 'px';" placeholder=""
+                                                                   value="${ins2}"></span></cell>:
+                                    </c:if>
+                                </c:forEach>
+                            </c:if>
+                            <c:if test="${empty ins.args}">
+                                <c:forEach items="${ins.argCounts}" var="ins3">
+                                    <c:if test="${ins.name != 'Label:'}">
+                                        <cell></cell><span> <input name="arg" id="arg" class="form" type="text" style="width: 15px;" onkeypress="this.style.width = ((this.value.length + 1) * 15) + 'px';" placeholder=""></span></cell>
+                                    </c:if>
+                                    <c:if test="${ins.name == 'Label:'}">
+                                        <cell></cell><span> <input name="arg" id="arg" class="form" type="text" style="width: 15px;" onkeypress="this.style.width = ((this.value.length + 1) * 15) + 'px';" placeholder=""></span></cell>:
+                                    </c:if>
+                                </c:forEach>
+                            </c:if>
                         </li>
                     </c:forEach>
                 </c:if>
             </ul>
             </div>
             <button onclick="ConnectSSH()">Execute</button>
-
-            <br>
+            <button onclick="exportFile()">Export</button>
+            <input type="button"  onclick="location.href='/'" value="Clear List" >
+            <!--<input type="button"  onclick="location.href='/importFile'" value="Import"/>-->
+            <br><br>
+       <form action="/importFile" method="POST" enctype="multipart/form-data">
+           <input type="file" name="file"><br>
+           <button type="submit">Import File</button>
+       </form>
+       <br>
             <div id="output">
                 Console output here.
             </div>
@@ -163,7 +197,6 @@
                     <li class="list-group-item">${ins.name}</li>
             </c:forEach>
             </ul>
-
         </div>
     </div>
 <script><%@include file="/WEB-INF/javascript/UILists.js"%> </script>

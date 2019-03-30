@@ -1,21 +1,41 @@
 package com.compiler.classes;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class instruction {
 
     private int argCount;
     private String name;
+    private int lineNum;
     private int argument;
     private int argument2;
+    public ArrayList<String> args;
     ArrayList<Integer> argCounts;
-    private int lineNumber;
-    List<String> selectedInstructions;
+
+    public int getLineNum() {
+        return lineNum;
+    }
+
+    public void setLineNum(int lineNum) {
+        this.lineNum = lineNum;
+    }
+
+    public instruction() {
+    }
+
+    public ArrayList<String> getArgs() {
+        return args;
+    }
+
+    public void addArg(String arg) {
+        this.args.add(arg);
+    }
 
 
-    public instruction(){
-        //no arg constructor
+    public ArrayList<Integer> getargCounts() {
+        return argCounts;
     }
 
     public instruction(String name) {
@@ -25,11 +45,24 @@ public class instruction {
     //Set name and number of arguments to an instruction
     public instruction(String name, int argCount) {
         argCounts = new ArrayList<>();
-        for(int i = 0; i < argCount; i++){
-            argCounts.add(0);
+        args = new ArrayList<>();
+       for(int i = 0; i < argCount; i++){
+            argCounts.add(1);
         }
         this.name = name;
         this.argCount = argCount;
+    }
+
+    //Set name and number of arguments to an instruction
+    public instruction(String name, int argCount, int lineNum) {
+        argCounts = new ArrayList<>();
+        args = new ArrayList<>();
+        for(int i = 0; i < argCount; i++){
+            argCounts.add(1);
+        }
+        this.name = name;
+        this.argCount = argCount;
+        this.lineNum = lineNum;
     }
 
 
@@ -50,35 +83,19 @@ public class instruction {
         return argCount;
     }
 
-    public ArrayList<Integer> getArgCounts() {
-        return argCounts;
-    }
 
-    public void setArgCount(int argCount) {
-        this.argCount = argCount;
-    }
-
-    public int getArgument() {
-        return argument;
-    }
-
-    public void setArgument(int argument) {
-        this.argument = argument;
-    }
-
-    public int getArgument2() {
-        return argument2;
-    }
-
-    public void setArgument2(int argument2) {
-        this.argument2 = argument2;
-    }
 
     //List of all instructions
     public ArrayList<instruction> instructionList(){
         ArrayList<instruction> instructions = new ArrayList<>();
         instruction temp;
 
+        //Will hold vars
+        temp = new instruction("Variable",2);
+        instructions.add(temp);
+        //For Labels:
+        temp = new instruction("Label:",1);
+        instructions.add(temp);
         //ADD
         temp = new instruction("ADD",1);
         instructions.add(temp);
@@ -125,7 +142,7 @@ public class instruction {
         temp = new instruction("SUB",1);
         instructions.add(temp);
         //NOOP
-        temp = new instruction("NOOP",1);
+        temp = new instruction("NOOP",0);
         instructions.add(temp);
         //LOAD
         temp = new instruction("LOAD",1);
@@ -142,6 +159,7 @@ public class instruction {
         //STACKR
         temp = new instruction("STACKR",1);
         instructions.add(temp);
+
 
         return instructions;
     }

@@ -34,7 +34,7 @@ public class ConnectSSH {
      *      substitute "general" user information once a profile is created for us
      *      Currently: use personal credentials
      */
-    private static final String user = "tdkxc6";
+    private static final String user = "smwrgd";
     
     
     /**
@@ -49,7 +49,7 @@ public class ConnectSSH {
      *            Need to figure out secure connection without password in plain text
      * @var password for SSH connection
      */
-    private static final String password = "";
+    private static final String password = "Sw@8914649";
     
 
     /**
@@ -165,13 +165,13 @@ public class ConnectSSH {
         mySession.setConfig(config);
         
         System.out.println("Connecting session...");
-        mySession.connect(30000);
+        mySession.connect(3000);
         System.out.println("Session connected... \n");
     }
 
 
 
-    public void connectShellChannel () throws JSchException, IOException, SftpException {
+    public void connectShellChannel () throws JSchException, IOException, SftpException, InterruptedException {
         myChannel = mySession.openChannel("shell");
             
         myChannel.setInputStream(System.in);
@@ -184,7 +184,10 @@ public class ConnectSSH {
 
         //execute script to run virtMach with send file
         //TODO - change script to run sent file. currently runs test.asm
-        executeCommand("./assemblyVirtMach/execVirtMachine.sh");
+        //executeCommand("./assemblyVirtMach/execVirtMachine.sh");
+        executeCommand("cd assemblyVirtMach");
+        executeCommand("./mach file.asm");
+
     }
 
     public void disconnectShellChannel () {
@@ -210,7 +213,6 @@ public class ConnectSSH {
         PrintStream ps = new PrintStream(myChannel.getOutputStream());
         
         ps.println(command);
-        
         ps.flush();
     }
 
