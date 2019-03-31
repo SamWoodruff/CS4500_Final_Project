@@ -34,7 +34,7 @@ public class ConnectSSH {
      *      substitute "general" user information once a profile is created for us
      *      Currently: use personal credentials
      */
-    private static final String user = "smwrgd";
+    private static final String user = "";
     
     
     /**
@@ -49,7 +49,7 @@ public class ConnectSSH {
      *            Need to figure out secure connection without password in plain text
      * @var password for SSH connection
      */
-    private static final String password = "Sw@8914649";
+    private static final String password = "";
     
 
     /**
@@ -184,9 +184,7 @@ public class ConnectSSH {
 
         //execute script to run virtMach with send file
         //TODO - change script to run sent file. currently runs test.asm
-        //executeCommand("./assemblyVirtMach/execVirtMachine.sh");
-        executeCommand("cd assemblyVirtMach");
-        executeCommand("./mach file.asm");
+        executeCommand("./assemblyVirtMach/execVirtMachine.sh");
 
     }
 
