@@ -9,7 +9,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Compiler-UI</title>
+    <title>Home Page</title>
     <style>
         .form {
             border: 1px solid black;
@@ -66,10 +66,17 @@
     <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 
     <script>
-        function ConnectSSH() {
+        function executeAsm() {
+            var arguments = $("#editorList li input[name='arg']").map(function(){return $(this).val();}).get();
             $.ajax({
                type: "POST",
-               url: "/serverConnect",
+               url: "/executeAsm",
+                data: {
+                    "arguments": arguments
+                },
+                success: function (data) {
+                    document.getElementById("output").innerHTML = data;
+                }
             });
         }
         function processDrop(){
@@ -127,7 +134,6 @@
 </head>
 <body>
    <div class="split left">
-            <h3>Janikow's Assembly Interpreter</h3>
             <h2>Tile editor</h2>
             <br>
             <div ondrop="processDrop()">
@@ -169,7 +175,7 @@
                 </c:if>
             </ul>
             </div>
-            <button onclick="ConnectSSH()">Execute</button>
+            <button onclick="executeAsm()">Execute</button>
             <button onclick="exportFile()">Export</button>
             <input type="button"  onclick="location.href='/'" value="Clear List" >
             <!--<input type="button"  onclick="location.href='/importFile'" value="Import"/>-->

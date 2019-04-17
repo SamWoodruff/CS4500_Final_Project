@@ -1,10 +1,6 @@
-package com.compiler.controllers;
-
-import com.SSHConnection.ConnectSSH;
-import com.compiler.classes.instruction;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.SftpException;
-import org.apache.tomcat.util.buf.StringUtils;
+package com.interpreter.controllers;
+import com.interpreter.classes.Interpreter;
+import com.interpreter.classes.instruction;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -14,6 +10,7 @@ import java.io.IOException;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -36,11 +33,11 @@ public class UserController {
         instruction instruction = new instruction();
         //Populate instruction object with list of instructions
         ArrayList<instruction> instructions = instruction.instructionList();
-        //add instructions to session to use in CompilerPage.jsp
+        //add instructions to session to use in HomePage.jsp
         session.setAttribute("instructions",instructions);
         ArrayList<instruction> selectedInstructions = new ArrayList<>();
         session.setAttribute("selectedInstructions",selectedInstructions);
-        return "CompilerPage";
+        return "HomePage";
     }
 
     @RequestMapping(value="/retrieveList", method = RequestMethod.POST)
@@ -75,8 +72,8 @@ public class UserController {
         for (int i = 0; i < editorList.length; i++) {
             for (int k = 0; k < instructions.size(); k++) {
                 if (instructions.get(k).getName().equals(editorList[i])) {
-                     instruction temp = new instruction(editorList[i], instructions.get(k).getArgCount(), (i + 1));
-                     selectedInstructions.add(temp);
+                    instruction temp = new instruction(editorList[i], instructions.get(k).getArgCount(), (i + 1));
+                    selectedInstructions.add(temp);
                 }
             }
         }
@@ -85,28 +82,39 @@ public class UserController {
         selectedInstructions = handleArgs(args,selectedInstructions,skip);
         session.setAttribute("selectedInstructions",selectedInstructions);
 
-        return "CompilerPage";
+        return "HomePage";
     }
 
-    @RequestMapping(value="/serverConnect", method = RequestMethod.POST)
-    public void connectSSH() throws IOException, SftpException {
-        ConnectSSH connection = new ConnectSSH();
-        try {
-            connection.connectSession();
-            connection.connectShellChannel();
+    @RequestMapping(value="/executeAsm", method = RequestMethod.POST)
+    @ResponseBody
+    public String executeAsm(@RequestParam(value="arguments[]")String[] arguments, HttpSession session){
 
+        ArrayList<String> input = new ArrayList<>();
+        ArrayList<instruction> selectedInstructions = (ArrayList<instruction>) session.getAttribute("selectedInstructions");
+        selectedInstructions = handleArgs(arguments, selectedInstructions, -1);
 
-        } catch (JSchException e) {
-            System.out.println(e);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        Interpreter interpreter = new Interpreter();
+        //System.out.println(selectedInstructions.toString());
+
+        for(int i = 0; i < selectedInstructions.size(); i++){
+            String line="";
+            if(selectedInstructions.get(i).getName() != "Variable" && selectedInstructions.get(i).getName() != "Label:") {
+                line = selectedInstructions.get(i).getName();
+            }
+            for(int k = 0 ; k < selectedInstructions.get(i).getArgCount(); k++){
+                line +=" ";
+                line += selectedInstructions.get(i).getArg(k);
+            }
+            input.add(line);
         }
 
+        String returnToUser = interpreter.interpret(input);
+        return returnToUser;
     }
 
     @RequestMapping(value="/createFile", method = RequestMethod.POST)
     public String exportFile(@RequestParam(value="arguments[]")String[] arguments, HttpSession session, HttpServletResponse response) throws IOException {
-         ArrayList<instruction> selectedInstructions = (ArrayList<instruction>) session.getAttribute("selectedInstructions");
+        ArrayList<instruction> selectedInstructions = (ArrayList<instruction>) session.getAttribute("selectedInstructions");
         //Ensures most updated arguments are in the proper locations
         selectedInstructions = handleArgs(arguments, selectedInstructions, -1);
         session.setAttribute("selectedInstructions", selectedInstructions);
@@ -137,7 +145,7 @@ public class UserController {
         writer.close();
         System.out.println(temp);
 
-        return "CompilerPage";
+        return "HomePage";
     }
 
     @RequestMapping("/downloadFile")
@@ -164,19 +172,17 @@ public class UserController {
         String content = new String(file.getBytes());//Write file contents to string
         String lines[] = content.split("\n");
 
-        if(!selectedInstructions.isEmpty()) {
+        /*if(!selectedInstructions.isEmpty()) {
             selectedInstructions.clear();
-        }
+        }*/
 
         for(int i = 0; i < lines.length; i++) {
             String words[] = lines[i].split("\\s+");
             for(int k = 0; k < words.length; k++){
-                System.out.println(words[k]);
-
                 //Check line for instruction
-               for(int t = 0; t < instructions.size(); t++){
+                for(int t = 0; t < instructions.size(); t++){
                     if(instructions.get(t).getName().equals(words[k])){
-                       instruction ins = new instruction(words[k],instructions.get(t).getArgCount(),(i+1));
+                        instruction ins = new instruction(words[k],instructions.get(t).getArgCount(),(i+1));
                         //assign args
                         for(int m = 0; m < ins.getArgCount(); m++){
                             if(k+1 < words.length) {
@@ -185,22 +191,22 @@ public class UserController {
                             }
                         }
                         selectedInstructions.add(ins);
-                       continue;
+                        continue;
                     }
                 }
 
                 //Check line for variable
                 if (words[k].length() == 1 && (k+1) < words.length) {
-                        if(words[k + 1].matches("\\d+")){
-                            instruction ins = new instruction("Variable",2,(i+1));
-                            ins.args.add(words[k]);
-                            k++;
-                            ins.args.add(words[k]);
-                            selectedInstructions.add(ins);
-                            continue;
-                        }else{
-                            //return no/improper assignment to var error
-                        }
+                    if(words[k + 1].matches("\\d+")){
+                        instruction ins = new instruction("Variable",2,(i+1));
+                        ins.args.add(words[k]);
+                        k++;
+                        ins.args.add(words[k]);
+                        selectedInstructions.add(ins);
+                        continue;
+                    }else{
+                        //return no/improper assignment to var error
+                    }
                 }
                 //check line for label
                 if(words[k].contains(":") && k==0){
@@ -215,30 +221,30 @@ public class UserController {
             }
         }
 
-        return "CompilerPage";
+        return "HomePage";
     }
 
     //Handles args when execute button is clicked
-    ArrayList<instruction> handleArgs(String[] arguments,ArrayList<instruction> selectedInstructions, int skip){
-            int count = 0, start = 0;
-            //Clear arraylists each instruction has holding the args
-            for (int i = 0; i < selectedInstructions.size(); i++) {
-                if (!(selectedInstructions.get(i).args.isEmpty())) {
-                    selectedInstructions.get(i).args.clear();
-                }
+    ArrayList<instruction> handleArgs(String[] arguments, ArrayList<instruction> selectedInstructions, int skip){
+        int count = 0, start = 0;
+        //Clear arraylists each instruction has holding the args
+        for (int i = 0; i < selectedInstructions.size(); i++) {
+            if (!(selectedInstructions.get(i).args.isEmpty())) {
+                selectedInstructions.get(i).args.clear();
             }
-
-            //assign the new args to instructions
-            for (int i = 0; i < selectedInstructions.size(); i++) {
-                for (int k = 0; k < selectedInstructions.get(i).getArgCount(); k++) {
-                    if(skip == i){
-                        break;
-                    }
-                    selectedInstructions.get(i).args.add(arguments[count]);
-                    count++;
-                }
-            }
-
-            return selectedInstructions;
         }
+
+        //assign the new args to instructions
+        for (int i = 0; i < selectedInstructions.size(); i++) {
+            for (int k = 0; k < selectedInstructions.get(i).getArgCount(); k++) {
+                if(skip == i){
+                    break;
+                }
+                selectedInstructions.get(i).args.add(arguments[count]);
+                count++;
+            }
+        }
+
+        return selectedInstructions;
+    }
 }

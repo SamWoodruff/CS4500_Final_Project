@@ -1,4 +1,4 @@
-package com.compiler.classes;
+package com.interpreter.classes;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,6 +13,10 @@ public class instruction {
     private int argument2;
     public ArrayList<String> args;
     ArrayList<Integer> argCounts;
+
+    public String getArg(int index){
+        return args.get(index);
+    }
 
     public int getLineNum() {
         return lineNum;
@@ -162,5 +166,13 @@ public class instruction {
 
 
         return instructions;
+    }
+
+    @Override
+    public String toString() {
+        return "instruction{" +
+                "name='" + name + '\'' +
+                ", args=" + args +
+                '}';
     }
 }

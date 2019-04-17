@@ -1,14 +1,14 @@
-package com.compiler.controllers;
+package com.interpreter.controllers;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CompilerApplication {
+public class InterpreterApplication {
 
     public static void main(String[] args) {
 
-        SpringApplication.run(CompilerApplication.class, args);
+        SpringApplication.run(InterpreterApplication.class, args);
 
     }
 
