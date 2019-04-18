@@ -20,6 +20,19 @@ public class Interpreter {
     public static int NumInstructs = 0;
     public static int NumNumbers = 0;
 
+    public static void cleanUp(){
+        ACC = 0;
+        IP = 0;
+        Vars.clear();
+        NumVars = 0;
+        Labels.clear();
+        NumLabels = 0;
+        Instructs.clear();
+        NumInstructs = 0;
+        NumNumbers = 0;
+        stack.setTos(-1);
+    }
+
     public static String error(String s) {
         System.out.println("Error: " + s);
         return "Error: " + s;
@@ -64,7 +77,7 @@ public class Interpreter {
 
     public static String WRITE(int a, int b) {
         System.out.println("Number is: " + Vars.get(a).getVal());
-        return "Number is: " + Vars.get(a).getVal();
+        return "Number is: " + Vars.get(a).getVal() + "\n";
     }
 
     public static void STOP(int a, int b) {
@@ -242,6 +255,8 @@ public class Interpreter {
         return returnToUser;
 }
     public static String run(String name, int i){
+        /*System.out.println("TEST IN RUN FUNCTION:");
+        System.out.println(name);*/
         String temp = "";
         switch (name){
             case "ADD":

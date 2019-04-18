@@ -27,8 +27,6 @@ public class UserController {
 
     @RequestMapping("/")
     public String home(Map<String, Object> model, HttpSession session) {
-        System.out.println("in spring\n");
-
         //Create new instruction object
         instruction instruction = new instruction();
         //Populate instruction object with list of instructions
@@ -90,6 +88,10 @@ public class UserController {
     public String executeAsm(@RequestParam(value="arguments[]")String[] arguments, HttpSession session){
 
         ArrayList<String> input = new ArrayList<>();
+        if(!input.isEmpty()) {
+            input.clear();
+        }
+
         ArrayList<instruction> selectedInstructions = (ArrayList<instruction>) session.getAttribute("selectedInstructions");
         selectedInstructions = handleArgs(arguments, selectedInstructions, -1);
 
@@ -107,8 +109,8 @@ public class UserController {
             }
             input.add(line);
         }
-
         String returnToUser = interpreter.interpret(input);
+        interpreter.cleanUp();
         return returnToUser;
     }
 
