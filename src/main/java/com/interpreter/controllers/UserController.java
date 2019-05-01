@@ -100,7 +100,7 @@ public class UserController {
 
         for(int i = 0; i < selectedInstructions.size(); i++){
             String line="";
-            if(selectedInstructions.get(i).getName() != "Variable" && selectedInstructions.get(i).getName() != "Label:") {
+            if(!selectedInstructions.get(i).getName().equals("Variable") && !selectedInstructions.get(i).getName().equals("Label:")) {
                 line = selectedInstructions.get(i).getName();
             }
             for(int k = 0 ; k < selectedInstructions.get(i).getArgCount(); k++){
@@ -109,6 +109,7 @@ public class UserController {
             }
             input.add(line);
         }
+        System.out.println(input.toString());
         String returnToUser = interpreter.interpret(input);
         interpreter.cleanUp();
         return returnToUser;

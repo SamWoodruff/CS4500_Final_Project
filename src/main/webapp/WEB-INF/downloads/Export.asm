@@ -1,2 +1,5 @@
-BRPOS 3 
+READ X 
+WRITE X 
+STOP 
+X 0 
 

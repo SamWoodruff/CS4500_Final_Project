@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class Interpreter {
     public Interpreter() {
     }
-
+    public static Scanner in;
     public static Stack stack = new Stack();
 
     public static int ACC = 0;
@@ -31,10 +31,13 @@ public class Interpreter {
         NumInstructs = 0;
         NumNumbers = 0;
         stack.setTos(-1);
+
+
     }
 
     public static String error(String s) {
         System.out.println("Error: " + s);
+        cleanUp();
         return "Error: " + s;
         //System.exit(0);
     }
@@ -68,11 +71,10 @@ public class Interpreter {
     }
 
     public static void READ(int a, int b) {
-        System.out.println("Give number: ");
         Scanner in = new Scanner(System.in);
+        System.out.println("Give number: ");
         int num = in.nextInt();
         Vars.get(a).setVal(num);
-        in.close();
     }
 
     public static String WRITE(int a, int b) {
@@ -223,7 +225,6 @@ public class Interpreter {
 
 
     public static String interpret(ArrayList<String> input){
-
         pass1(input);//count instructs,labels, and variables
         //For Debugging pass1
         //System.out.println("NumLabels: " + NumLabels + " NumNumbers: " + NumNumbers + " NumVars: " + NumVars + " NumInstructs: " + NumInstructs);
