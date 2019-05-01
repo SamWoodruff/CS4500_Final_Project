@@ -94,12 +94,6 @@ public class instruction {
         ArrayList<instruction> instructions = new ArrayList<>();
         instruction temp;
 
-        //Will hold vars
-        temp = new instruction("Variable",2);
-        instructions.add(temp);
-        //For Labels:
-        temp = new instruction("Label:",1);
-        instructions.add(temp);
         //ADD
         temp = new instruction("ADD",1);
         instructions.add(temp);
@@ -109,17 +103,17 @@ public class instruction {
         //BRNEG
         temp = new instruction("BRNEG",1);
         instructions.add(temp);
-        //BRZNEG
-        temp = new instruction("BRZNEG",1);
-        instructions.add(temp);
         //BRPOS
         temp = new instruction("BRPOS",1);
         instructions.add(temp);
-        //BRZPOS
-        temp = new instruction("BRZPOS",1);
-        instructions.add(temp);
         //BRZERO
         temp = new instruction("BRZERO",1);
+        instructions.add(temp);
+        //BRZNEG
+        temp = new instruction("BRZNEG",1);
+        instructions.add(temp);
+        //BRZPOS
+        temp = new instruction("BRZPOS",1);
         instructions.add(temp);
         //COPY
         temp = new instruction("COPY",2);
@@ -127,14 +121,20 @@ public class instruction {
         //DIV
         temp = new instruction("DIV",1);
         instructions.add(temp);
+        //For Labels:
+        temp = new instruction("Label:",1);
+        instructions.add(temp);
+        //LOAD
+        temp = new instruction("LOAD",1);
+        instructions.add(temp);
         //MULT
         temp = new instruction("MULT",1);
         instructions.add(temp);
+        //NOOP
+        temp = new instruction("NOOP",0);
+        instructions.add(temp);
         //READ
         temp = new instruction("READ",1);
-        instructions.add(temp);
-        //WRITE
-        temp = new instruction("WRITE",1);
         instructions.add(temp);
         //STOP
         temp = new instruction("STOP",0);
@@ -145,25 +145,24 @@ public class instruction {
         //SUB
         temp = new instruction("SUB",1);
         instructions.add(temp);
-        //NOOP
-        temp = new instruction("NOOP",0);
-        instructions.add(temp);
-        //LOAD
-        temp = new instruction("LOAD",1);
+        //POP
+        temp = new instruction("POP",0);
         instructions.add(temp);
         //PUSH
         temp = new instruction("PUSH",0);
         instructions.add(temp);
-        //POP
-        temp = new instruction("POP",0);
+        //STACKR
+        temp = new instruction("STACKR",1);
         instructions.add(temp);
         //STACKW
         temp = new instruction("STACKW",1);
         instructions.add(temp);
-        //STACKR
-        temp = new instruction("STACKR",1);
+        //Will hold vars
+        temp = new instruction("Variable",2);
         instructions.add(temp);
-
+        //WRITE
+        temp = new instruction("WRITE",1);
+        instructions.add(temp);
 
         return instructions;
     }

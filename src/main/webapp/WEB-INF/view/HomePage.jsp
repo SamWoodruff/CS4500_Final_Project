@@ -11,50 +11,7 @@
 <head>
     <title>Home Page</title>
     <style>
-        .form {
-            border: 1px solid black;
-            text-align: center;
-            outline: none;
-            min-width:4px;
-        }
-
-        #output {
-            border-style: solid;
-            border-width: 2px;
-            margin-top: 20px;
-            width: 100%;
-            height: 200px;
-        }
-
-        span {
-            display: inline-block;
-        }
-        /* Split the screen in half */
-        .split {
-            height: 100%;
-            width: 50%;
-            position: fixed;
-            z-index: 1;
-            top: 0;
-            overflow-x: hidden;
-            padding-top: 20px;
-        }
-
-        /* Control the left side */
-        .left {
-            left: 0;
-            background-color: white;
-            border: 5px solid gray;
-            padding: 10px;
-        }
-
-        /* Control the right side */
-        .right {
-            right: 0;
-            background-color: white;
-            border: 5px solid gray;
-            padding: 10px;
-        }
+        <%@include file="/WEB-INF/css/homepage.css"%>
     </style>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"/>
@@ -66,70 +23,7 @@
     <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 
     <script>
-        function executeAsm() {
-            var arguments = $("#editorList li input[name='arg']").map(function(){return $(this).val();}).get();
-            $.ajax({
-               type: "POST",
-               url: "/executeAsm",
-                data: {
-                    "arguments": arguments
-                },
-                success: function (data) {
-                    document.getElementById("output").innerHTML = data;
-                }
-            });
-        }
-        function processDrop(){
-            var editorList = $('#editorList li').map(function(){ return $(this).text(); });
-            var arguments = $("#editorList li input[name='arg']").map(function(){return $(this).val();}).get();
-            $.ajax({
-                type: "POST",
-                url: "/retrieveList",
-                data: {
-                    "editorList": editorList.toArray(),
-                    "arguments": arguments.toString()
-                },
-                success: function (data) {
-                    document.open();
-                    document.write(data);
-                    document.close();
-                },
-                error: function (e) {
-                    alert('error ' + e);
-                }
-            });
-        }
-        function passArgs(){
-            var arguments = $("#editorList li input[name='arg']").map(function(){return $(this).val();}).get();
-            $.ajax({
-                type: "POST",
-                url: "/passArgs",
-                data: {
-                    "arguments": arguments
-                },
-                success: function (data) {
-                    document.open();
-                    document.write(data);
-                    document.close();
-                },
-                error: function (e) {
-                    alert('error ' + e);
-                }
-            });
-        }
-        function exportFile() {
-            var arguments = $("#editorList li input[name='arg']").map(function(){return $(this).val();}).get();
-            $.ajax({
-                type: "POST",
-                url: "/createFile",
-                data: {
-                    "arguments": arguments
-                },
-                success: function (data) {
-                    window.location.replace("/downloadFile")
-                }
-            });
-        }
+        <%@include file="/WEB-INF/javascript/home.js"%>
     </script>
 </head>
 <body>
@@ -143,7 +37,7 @@
                 </c:if>
                 <c:if test="${!empty selectedInstructions}">
                     <c:forEach items="${selectedInstructions}" var="ins">
-                        <li draggable="true" class="list-group-item">
+                        <li draggable="true" class="draggedTiles">
                             ${ins.lineNum})
                             <c:if test="${ins.name != 'Variable' && ins.name != 'Label:'}">
                                 ${ins.name}
@@ -175,38 +69,63 @@
                 </c:if>
             </ul>
             </div>
-            <button onclick="executeAsm()">Execute</button>
-            <button onclick="exportFile()">Export</button>
-            <input type="button"  onclick="location.href='/'" value="Clear List" >
-            <!--<input type="button"  onclick="location.href='/importFile'" value="Import"/>-->
-            <br><br>
-       <form action="/importFile" method="POST" enctype="multipart/form-data">
-           <input type="file" name="file"><br>
-           <button type="submit">Import File</button>
-       </form>
-       <br>
-            <div id="output">
-                Console output here.
-            </div>
-        </div>
-    </div>
-    <div class="split right">
-        <div class="centered">
-            <h3>Instruction List</h3>
-            Drag tile here to remove:
-            <div id="devnull" class="list-group">
 
-            </div>
-            <!--Lists all instructions to choose from-->
-            <ul id="instructionList" class="list-group">
-            <c:forEach items="${instructions}" var="ins">
-                    <li class="list-group-item">${ins.name}</li>
-            </c:forEach>
-            </ul>
+       <br>
+       <br>
+       <button class="button" onclick="executeAsm()">Execute</button>
+       <button class="button" onclick="exportFile()">Export</button>
+       <input class="button"type="button"  onclick="location.href='/'" value="Clear List" >
+       <div id="devnull" class="button">
+           Drag tile here to remove:
+       </div>
+    </div>
+   <div id="output" class="console">
+       Console output here.
+   </div>
+   </div>
+    <div class="split right">
+        <h3>Instruction List</h3>
+        <button class="button" onclick="document.getElementById('id01').style.display='block'">Help</button>
+        <div id="id01" class="help" style="display:none">
+            <span onclick="this.parentElement.style.display='none'" class="">x</span>
+            <p>Instruction Set (# arguments, meaning)</p>
+            <p>BR (1, jump to arg)</p>
+            <p>BRNEG (1, jump to arg if ACC <0)</p>
+            <p>BRZNEG (1, jump to arg if ACC <=0)</p>
+            <p>BRPOS (1, jump to arg if ACC >0)</p>
+            <p>BRZPOS (1, jump to arg if ACC >=0)</p>
+            <p>BRZERO (1, jump to arg if ACC ==0)</p>
+            <p>COPY (2, arg1 = arg2)</p>
+            <p>ADD (1, ACC = ACC +arg)</p>
+            <p>SUB (1, ACC = ACC - arg)</p>
+            <p>DIV (1, ACC = ACC / arg)</p>
+            <p>MULT (1, ACC = ACC * arg)</p>
+            <p>READ (1, arg=input integer)</p>
+            <p>WRITE (1, print integer)</p>
+            <p>STOP (0, stop program)</p>
+            <p>STORE (1, arg = ACC)</p>
+            <p>LOAD (1, ACC=arg)</p>
+            <p>NOOP (0, nothing)</p>
         </div>
+
+        <br><br>
+        <div class="centered">
+            <br>
+                <!--Lists all instructions to choose from-->
+                <ul id="instructionList" class="listUL">
+                 <c:forEach items="${instructions}" var="ins">
+                        <li class="dragTiles">${ins.name}</li>
+                 </c:forEach>
+                </ul>
+            </div>
+        <form action="/importFile" method="POST" enctype="multipart/form-data">
+                   <span style="display: inline;">
+                  <input class="button" type="file" name="file">
+                  <button class="button" type="submit">Import File</button>
+                   </span>
+        </form>
     </div>
 <script><%@include file="/WEB-INF/javascript/UILists.js"%> </script>
-
 </body>
 </html>
 <!--<input type="text" maxlength="8" style="width: 15px; height:20px;">-->
