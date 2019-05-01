@@ -75,9 +75,6 @@
        <button class="button" onclick="executeAsm()">Execute</button>
        <button class="button" onclick="exportFile()">Export</button>
        <input class="button"type="button"  onclick="location.href='/'" value="Clear List" >
-       <div id="devnull" class="button">
-           Drag tile here to remove:
-       </div>
     </div>
    <div id="output" class="console">
        Console output here.
@@ -86,6 +83,9 @@
     <div class="split right">
         <h3>Instruction List</h3>
         <button class="button" onclick="document.getElementById('id01').style.display='block'">Help</button>
+        <div id="devnull" class="button">
+            Drag tile here to remove:
+        </div>
         <div id="id01" class="help" style="display:none">
             <span onclick="this.parentElement.style.display='none'" class="">x</span>
             <p>Instruction Set (# arguments, meaning)</p>

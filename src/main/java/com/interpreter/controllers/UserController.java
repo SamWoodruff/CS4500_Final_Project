@@ -96,20 +96,27 @@ public class UserController {
         selectedInstructions = handleArgs(arguments, selectedInstructions, -1);
 
         Interpreter interpreter = new Interpreter();
-        //System.out.println(selectedInstructions.toString());
-
-        for(int i = 0; i < selectedInstructions.size(); i++){
-            String line="";
-            if(!selectedInstructions.get(i).getName().equals("Variable") && !selectedInstructions.get(i).getName().equals("Label:")) {
-                line = selectedInstructions.get(i).getName();
+        String line = "";
+        for (int i = 0; i < selectedInstructions.size(); i++) {
+            if (!selectedInstructions.get(i).getName().equals("Variable") && !selectedInstructions.get(i).getName().equals("Label:")) {
+                line += selectedInstructions.get(i).getName();
+                line += " ";
             }
-            for(int k = 0 ; k < selectedInstructions.get(i).getArgCount(); k++){
-                line +=" ";
-                line += selectedInstructions.get(i).getArg(k);
+            if (selectedInstructions.get(i).getName().equals("Label:")) {
+                selectedInstructions.get(i).args.set(0, selectedInstructions.get(i).args.get(0) + ":");
+                line += selectedInstructions.get(i).args.get(0);
+                line += " ";
+                continue;
+            }
+            for (int k = 0; k < selectedInstructions.get(i).getArgCount(); k++) {
+                line += selectedInstructions.get(i).args.get(k);
+                line += " ";
             }
             input.add(line);
+            line = "";
         }
-        System.out.println(input.toString());
+
+       // System.out.println(input.toString());
         String returnToUser = interpreter.interpret(input);
         interpreter.cleanUp();
         return returnToUser;
@@ -175,9 +182,9 @@ public class UserController {
         String content = new String(file.getBytes());//Write file contents to string
         String lines[] = content.split("\n");
 
-        /*if(!selectedInstructions.isEmpty()) {
+        if(!selectedInstructions.isEmpty()) {
             selectedInstructions.clear();
-        }*/
+        }
 
         for(int i = 0; i < lines.length; i++) {
             String words[] = lines[i].split("\\s+");
@@ -213,8 +220,9 @@ public class UserController {
                 }
                 //check line for label
                 if(words[k].contains(":") && k==0){
+                    words[k] = words[k].replace(":"," ");//Get rid of colon
+                    //System.out.println(words[k]);
                     instruction ins = new instruction("Label:",1,(i+1));
-                    words[k].replace(":","");//Get rid of colon
                     ins.args.add(words[k]);
                     selectedInstructions.add(ins);
                     continue;

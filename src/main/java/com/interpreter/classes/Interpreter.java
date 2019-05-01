@@ -230,11 +230,11 @@ public class Interpreter {
         //System.out.println("NumLabels: " + NumLabels + " NumNumbers: " + NumNumbers + " NumVars: " + NumVars + " NumInstructs: " + NumInstructs);
         pass2(input);//writes variables and labels
         //For Debugging pass2
-        //System.out.println("Labels: " + Labels.toString());
-        //System.out.println("Variables: " + Vars.toString());
+       /* System.out.println("Labels: " + Labels.toString());
+        System.out.println("Variables: " + Vars.toString());*/
         pass3(input);
         //For Debugging pass3
-        /*int i;
+       /* int i;
         for(int m = 0; m < NumInstructs; m++) {
             for (i = 0; i < 21; i++) {
                 if (InstructInfo[i].getFunctionName().equals(Instructs.get(m).getFunctionName())){
@@ -249,10 +249,11 @@ public class Interpreter {
             System.out.println();
         }*/
         String returnToUser = "";
-        for(int  p = 0; p < NumInstructs; p++){
-            returnToUser += run(Instructs.get(p).getFunctionName(),p);
+        for(int  p = 0; p < Instructs.size(); IP++){
+            returnToUser += run(Instructs.get(IP).getFunctionName(),IP);
+            p = IP;
         }
-
+        cleanUp();
         return returnToUser;
 }
     public static String run(String name, int i){
@@ -445,7 +446,9 @@ public class Interpreter {
 
     public static int findInTable(ArrayList<elem_t> table, String name){
         for(int i = 0; i < table.size(); i++){
+            table.get(i).setName(table.get(i).getName().replace("\\s",""));
             if(table.get(i).getName().equals(name)){
+
                 return i;
             }
         }
@@ -476,9 +479,9 @@ public class Interpreter {
                         if(k + 1 < tokens.length) {
                             k++;
                             if(instruct >=11 && instruct <= 16){//BR's
-                                label = findInTable(Labels,tokens[k]);
-                                if(label < 0){
-                                    error("BRs must be followed by defined labels");
+                                label = findInTable(Labels, tokens[k] + " ");
+                                if(label == -1){
+                                    error("BRs must be followed by defined labels " + tokens[k] + label);
                                 }
                                 Instructs.get(numInstructs).setArg(m, label);
                             }else{
