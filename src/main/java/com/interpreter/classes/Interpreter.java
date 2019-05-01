@@ -249,11 +249,10 @@ public class Interpreter {
             System.out.println();
         }*/
         String returnToUser = "";
-        for(int  p = 0; p < Instructs.size(); IP++){
+        for(int  p = 0; IP < Instructs.size(); IP++){
             returnToUser += run(Instructs.get(IP).getFunctionName(),IP);
             p = IP;
         }
-        cleanUp();
         return returnToUser;
 }
     public static String run(String name, int i){
