@@ -35,6 +35,9 @@ span {
     bottom: 0;
     border: 5px solid gray;
     padding: 10px;
+    overflow: scroll;
+    font-size: 12px;
+    font-weight: 900;
 }
 /* Control the right side */
 .right {

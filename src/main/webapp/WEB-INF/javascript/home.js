@@ -2,7 +2,17 @@ var output;
 function setOutput(data){
     output = data;
     if(output != "READ") {
-        document.getElementById("output").innerHTML = output;
+        output = output.split(" ");
+        document.getElementById("output").innerHTML = "";
+        for(var i = 0; i < output.length;i++){
+                if(isNaN(output[i])){
+                    document.getElementById("output").innerHTML+=output[i];
+                }else{
+                    document.getElementById("output").innerHTML+=output[i];
+                    document.getElementById("output").innerHTML+="<br>";
+                }
+            document.getElementById("output").innerHTML+=" ";
+        }
     }
 }
 function executeAsm() {

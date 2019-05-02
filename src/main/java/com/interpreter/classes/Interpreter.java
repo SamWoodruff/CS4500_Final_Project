@@ -78,7 +78,7 @@ public class Interpreter {
     }
 
     public static String WRITE(int a, int b) {
-        return "Number is: " + Vars.get(a).getVal() + "\n";
+        return "Number is: " + Vars.get(a).getVal() + " ";
     }
 
     public static void STOP(int a, int b) {
