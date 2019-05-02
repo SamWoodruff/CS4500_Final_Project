@@ -129,7 +129,8 @@ public class UserController {
     @RequestMapping(value="/passRead", method = RequestMethod.POST)
     @ResponseBody
     public String passRead(@RequestParam(value="readVal")int readVal){
-        READ(Instructs.get(IP).getArg(0), readVal);
+        READ(Instructs.get(IP).getArg(0),readVal);
+        IP++;
         String returnToUser = callFunctions();
         return returnToUser;
     }

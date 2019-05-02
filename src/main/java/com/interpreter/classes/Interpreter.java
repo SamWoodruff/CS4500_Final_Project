@@ -78,7 +78,6 @@ public class Interpreter {
     }
 
     public static String WRITE(int a, int b) {
-       // System.out.println("Number is: " + Vars.get(a).getVal());
         return "Number is: " + Vars.get(a).getVal() + "\n";
     }
 
@@ -231,8 +230,8 @@ public class Interpreter {
         //System.out.println("NumLabels: " + NumLabels + " NumNumbers: " + NumNumbers + " NumVars: " + NumVars + " NumInstructs: " + NumInstructs);
         pass2(input);//writes variables and labels
         //For Debugging pass2
-       /* System.out.println("Labels: " + Labels.toString());
-        System.out.println("Variables: " + Vars.toString());*/
+        //System.out.println("Labels: " + Labels.toString());
+        //System.out.println("Variables: " + Vars.toString());
         pass3(input);
         //For Debugging pass3
        /* int i;
@@ -257,7 +256,6 @@ public class Interpreter {
 
         while(IP < Instructs.size()){
             if(Instructs.get(IP).getFunctionName().equals("READ")){
-                IP++;
                 return "READ";
             }
             returnToUser += run(Instructs.get(IP).getFunctionName(),IP);
@@ -268,8 +266,6 @@ public class Interpreter {
     }
 
     public static String run(String name, int i){
-        /*System.out.println("TEST IN RUN FUNCTION:");
-        System.out.println(name);*/
         String temp = "";
         switch (name){
             case "ADD":
