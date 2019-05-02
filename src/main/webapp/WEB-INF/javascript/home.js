@@ -1,3 +1,10 @@
+var output;
+function setOutput(data){
+    output = data;
+    if(output != "READ") {
+        document.getElementById("output").innerHTML = output;
+    }
+}
 function executeAsm() {
     var arguments = $("#editorList li input[name='arg']").map(function(){return $(this).val();}).get();
     $.ajax({
@@ -6,8 +13,24 @@ function executeAsm() {
         data: {
             "arguments": arguments
         },
-        success: function (data) {
-            document.getElementById("output").innerHTML = data ;
+        success: function (data1){
+            setOutput(data1);
+            if(output == "READ") {
+                do{
+                    var readVal = prompt("Give number: ", "");
+                    $.ajax({
+                        type: "POST",
+                        url: "/passRead",
+                        async: false,
+                        data: {
+                            "readVal": readVal
+                        },
+                        success: function (data2) {
+                            setOutput(data2);
+                        }
+                    });
+                    }while(output == "READ");
+            }
         }
     });
 }

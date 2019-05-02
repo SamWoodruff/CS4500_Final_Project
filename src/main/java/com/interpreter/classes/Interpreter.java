@@ -71,14 +71,14 @@ public class Interpreter {
     }
 
     public static void READ(int a, int b) {
-        Scanner in = new Scanner(System.in);
+        /*Scanner in = new Scanner(System.in);
         System.out.println("Give number: ");
-        int num = in.nextInt();
-        Vars.get(a).setVal(num);
+        int num = in.nextInt();*/
+        Vars.get(a).setVal(b);
     }
 
     public static String WRITE(int a, int b) {
-        System.out.println("Number is: " + Vars.get(a).getVal());
+       // System.out.println("Number is: " + Vars.get(a).getVal());
         return "Number is: " + Vars.get(a).getVal() + "\n";
     }
 
@@ -156,7 +156,7 @@ public class Interpreter {
         ACC = stack.getLoc(loc);
     }
 
-    public static String Reserved[] = {"ADD", "SUB", "MULTI", "DIV", "LOAD", "STORE", "COPY", "READ",
+    public static String Reserved[] = {"ADD", "SUB", "MULT", "DIV", "LOAD", "STORE", "COPY", "READ",
             "WRITE", "STOP", "NOOP", "BR", "BRNEG", "BRZNEG", "BRPOS", "BRZPOS", "BRZERO",
             "PUSH", "POP", "STACKW", "STACKR", ""};
 
@@ -225,6 +225,7 @@ public class Interpreter {
 
 
     public static String interpret(ArrayList<String> input){
+        cleanUp();
         pass1(input);//count instructs,labels, and variables
         //For Debugging pass1
         //System.out.println("NumLabels: " + NumLabels + " NumNumbers: " + NumNumbers + " NumVars: " + NumVars + " NumInstructs: " + NumInstructs);
@@ -248,13 +249,24 @@ public class Interpreter {
             }
             System.out.println();
         }*/
-        String returnToUser = "";
-        for(int  p = 0; IP < Instructs.size(); IP++){
-            returnToUser += run(Instructs.get(IP).getFunctionName(),IP);
-            p = IP;
-        }
-        return returnToUser;
+        return callFunctions();
 }
+
+    public static String callFunctions(){
+        String returnToUser = "";
+
+        while(IP < Instructs.size()){
+            if(Instructs.get(IP).getFunctionName().equals("READ")){
+                IP++;
+                return "READ";
+            }
+            returnToUser += run(Instructs.get(IP).getFunctionName(),IP);
+            IP++;
+        }
+
+        return returnToUser;
+    }
+
     public static String run(String name, int i){
         /*System.out.println("TEST IN RUN FUNCTION:");
         System.out.println(name);*/
@@ -300,6 +312,7 @@ public class Interpreter {
                 COPY(Instructs.get(i).getArg(0), Instructs.get(i).getArg(1));
                 break;
             case "READ":
+                //Call function to retrieve far
                 READ(Instructs.get(i).getArg(0), Instructs.get(i).getArg(1));
                 break;
             case "NOOP":

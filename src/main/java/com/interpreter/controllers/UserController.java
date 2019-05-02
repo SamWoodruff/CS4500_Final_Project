@@ -22,6 +22,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Map;
 
+import static com.interpreter.classes.Interpreter.*;
+
 @Controller
 public class UserController {
 
@@ -118,7 +120,17 @@ public class UserController {
 
        // System.out.println(input.toString());
         String returnToUser = interpreter.interpret(input);
-        interpreter.cleanUp();
+        if(!returnToUser.equals("READ")) {
+            interpreter.cleanUp();
+        }
+        return returnToUser;
+    }
+
+    @RequestMapping(value="/passRead", method = RequestMethod.POST)
+    @ResponseBody
+    public String passRead(@RequestParam(value="readVal")int readVal){
+        READ(Instructs.get(IP).getArg(0), readVal);
+        String returnToUser = callFunctions();
         return returnToUser;
     }
 
@@ -234,6 +246,7 @@ public class UserController {
 
         return "HomePage";
     }
+
 
     //Handles args when execute button is clicked
     ArrayList<instruction> handleArgs(String[] arguments, ArrayList<instruction> selectedInstructions, int skip){
