@@ -95,8 +95,9 @@ public class UserController {
         }
 
         ArrayList<instruction> selectedInstructions = (ArrayList<instruction>) session.getAttribute("selectedInstructions");
-        selectedInstructions = handleArgs(arguments, selectedInstructions, -1);
-
+        if (arguments.length != 0) {
+            selectedInstructions = handleArgs(arguments, selectedInstructions, -1);
+        }
         Interpreter interpreter = new Interpreter();
         String line = "";
         for (int i = 0; i < selectedInstructions.size(); i++) {

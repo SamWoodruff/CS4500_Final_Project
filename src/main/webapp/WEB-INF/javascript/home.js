@@ -95,3 +95,19 @@ function exportFile() {
         }
     });
 }
+function expand(textbox) {
+    if (!textbox.startW) { textbox.startW = textbox.offsetWidth; }
+
+    var style = textbox.style;
+
+    //Force complete recalculation of width
+    //in case characters are deleted and not added:
+    style.width = 0;
+
+    //http://stackoverflow.com/a/9312727/1869660
+    var desiredW = textbox.scrollWidth;
+    //Optional padding to reduce "jerkyness" when typing:
+    desiredW += textbox.offsetHeight;
+
+    style.width = Math.max(desiredW, textbox.startW) + 'px';
+}

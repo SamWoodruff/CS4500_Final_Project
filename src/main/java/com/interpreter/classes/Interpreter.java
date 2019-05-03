@@ -4,6 +4,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import static org.springframework.util.ObjectUtils.isEmpty;
+
 public class Interpreter {
     public Interpreter() {
     }
@@ -123,36 +125,40 @@ public class Interpreter {
         }
     }
 
-    public static void PUSH(int a, int b) {
+    public static String PUSH(int a, int b) {
         if (stack.getTos() == 1000 - 1) {
-            error("Stack overflow");
+            return error("Stack overflow");
         }
         stack.setTos(stack.getTos() + 1);//increment tos
+        return "";
     }
 
-    public static void POP(int a, int b) {
+    public static String POP(int a, int b) {
         if (stack.getTos() < 0) {
-            error("Stack underflow");
+            return error("Stack underflow");
         }
         stack.setTos(stack.getTos() - 1);//decrement tos
+        return "";
     }
 
-    public static void STACKW(int a, int b) {
+    public static String STACKW(int a, int b) {
         int loc;
         loc = stack.getTos() - Vars.get(a).getVal();
         if (loc < 0 || loc > stack.getTos()) {
-            error("Stack write error");
+            return error("Stack write error");
         }
         stack.setLoc(loc, ACC);
+        return "";
     }
 
-    public static void STACKR(int a, int b) {
+    public static String STACKR(int a, int b) {
         int loc;
         loc = stack.getTos() - Vars.get(a).getVal();
         if (loc < 0 || loc > stack.getTos()) {
-            error("Stack read error");
+            return error("Stack read error");
         }
         ACC = stack.getLoc(loc);
+        return "";
     }
 
     public static String Reserved[] = {"ADD", "SUB", "MULT", "DIV", "LOAD", "STORE", "COPY", "READ",
@@ -228,11 +234,17 @@ public class Interpreter {
         pass1(input);//count instructs,labels, and variables
         //For Debugging pass1
         //System.out.println("NumLabels: " + NumLabels + " NumNumbers: " + NumNumbers + " NumVars: " + NumVars + " NumInstructs: " + NumInstructs);
-        pass2(input);//writes variables and labels
+        String error = pass2(input);//writes variables and labels
+        if(!isEmpty(error)){
+            return error;
+        }
         //For Debugging pass2
         //System.out.println("Labels: " + Labels.toString());
         //System.out.println("Variables: " + Vars.toString());
-        pass3(input);
+        error = pass3(input);
+        if(!isEmpty(error)){
+            return error;
+        }
         //For Debugging pass3
        /* int i;
         for(int m = 0; m < NumInstructs; m++) {
@@ -272,16 +284,16 @@ public class Interpreter {
                 ADD(Instructs.get(i).getArg(0), Instructs.get(i).getArg(1));
                 break;
             case "PUSH":
-                PUSH(Instructs.get(i).getArg(0), Instructs.get(i).getArg(1));
+                temp = PUSH(Instructs.get(i).getArg(0), Instructs.get(i).getArg(1));
                 break;
             case "STACKW":
-                STACKW(Instructs.get(i).getArg(0), Instructs.get(i).getArg(1));
+                temp = STACKW(Instructs.get(i).getArg(0), Instructs.get(i).getArg(1));
                 break;
             case "STACKR":
-                STACKR(Instructs.get(i).getArg(0), Instructs.get(i).getArg(1));
+                temp = STACKR(Instructs.get(i).getArg(0), Instructs.get(i).getArg(1));
                 break;
             case "POP":
-                POP(Instructs.get(i).getArg(0), Instructs.get(i).getArg(1));
+                temp = POP(Instructs.get(i).getArg(0), Instructs.get(i).getArg(1));
                 break;
             case "STOP":
                 STOP(Instructs.get(i).getArg(0), Instructs.get(i).getArg(1));
@@ -379,7 +391,7 @@ public class Interpreter {
         }
     }
 
-    public static void pass2(ArrayList<String> input){
+    public static String pass2(ArrayList<String> input){
         int numLabels = 0, numVarsNumbers = 0, numInstructs = 0, instruct = -1;
         String name = null, line;
         for(int i = 0; i < input.size(); i++){
@@ -412,20 +424,20 @@ public class Interpreter {
                     Vars.get(numVarsNumbers).setName(tokens[k]);
                     for(int m = 0; m < numVarsNumbers; m++){
                         if(Vars.get(m).getName() == tokens[k]){
-                            error("Multiply Defined Variable\n");
+                            return error("Multiply Defined Variable\n");
                         }
                     }
                     if(k + 1 < tokens.length) {
                         k++;
                         if(tokens[k] == null || isNumber(tokens[k]) == 0){
-                            error("Variable name must be followed by integer");
+                            return error("Variable name must be followed by integer");
                         }
                         Vars.get(numVarsNumbers).setVal(Integer.parseInt(tokens[k]));
                     }
                     if(k + 1 < tokens.length) {
                         k++;
                         if(nothing(tokens[k]) == 0){
-                            error("Left over on variable definition line");
+                            return error("Left over on variable definition line");
                         }
                     }
                     numVarsNumbers++;
@@ -435,7 +447,7 @@ public class Interpreter {
                             k++;
                             if((tokens[k] == null) || (InstructInfo[instruct].useImmediate == 0 && isNumber(tokens[k]) == 1)){
 
-                                    error("Invalid argument");
+                                   return error("Invalid argument");
                             }
                             if(isNumber(tokens[k]) == 1){
                                 elem_t var = new elem_t();
@@ -450,6 +462,7 @@ public class Interpreter {
                 }
             }
         }
+        return "";
     }
 
     public static int findInTable(ArrayList<elem_t> table, String name){
@@ -463,7 +476,7 @@ public class Interpreter {
         return -1;
     }
 
-    public static void pass3(ArrayList<String> input){
+    public static String pass3(ArrayList<String> input){
         int numInstructs = 0, instruct, label;
         String line;
         for(int i = 0; i < input.size(); i++){
@@ -489,13 +502,13 @@ public class Interpreter {
                             if(instruct >=11 && instruct <= 16){//BR's
                                 label = findInTable(Labels, tokens[k] + " ");
                                 if(label == -1){
-                                    error("BRs must be followed by defined labels " + tokens[k] + label);
+                                    return error("BRs must be followed by defined labels " + tokens[k] + label);
                                 }
                                 Instructs.get(numInstructs).setArg(m, label);
                             }else{
                                 label = findInTable(Vars, tokens[k]);
                                 if(label < 0){
-                                    error("Unknown argument");
+                                    return error("Unknown argument");
                                 }
                                 Instructs.get(numInstructs).setArg(m,label);
                             }
@@ -505,5 +518,6 @@ public class Interpreter {
                 }
             }
         }
+        return "";
     }
 }

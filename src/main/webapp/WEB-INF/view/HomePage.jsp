@@ -45,22 +45,20 @@
                             <c:if test="${!empty ins.args}">
                                 <c:forEach items="${ins.args}" var="ins2">
                                     <c:if test="${ins.name != 'Label:'}">
-                                        <cell></cell><span> <input name="arg" id="arg" class="form" type="text" style="width: 15px;" onkeypress="this.style.width = ((this.value.length + 1) * 15) + 'px';" placeholder=""
-                                                                    value="${ins2}"></span></cell>
+                                        <input type="text" name="arg" style="width: 50px;" onkeyup="expand(this);" value="${ins2}">
                                     </c:if>
                                     <c:if test="${ins.name == 'Label:'}">
-                                        <cell></cell><span> <input name="arg" id="arg" class="form" type="text" style="width: 15px;" onkeypress="this.style.width = ((this.value.length + 1) * 15) + 'px';" placeholder=""
-                                                                   value="${ins2}"></span></cell>:
+                                        <input type="text" name="arg" style="width: 50px;" onkeyup="expand(this);" value="${ins2}">:
                                     </c:if>
                                 </c:forEach>
                             </c:if>
                             <c:if test="${empty ins.args}">
                                 <c:forEach items="${ins.argCounts}" var="ins3">
                                     <c:if test="${ins.name != 'Label:'}">
-                                        <cell></cell><span> <input name="arg" id="arg" class="form" type="text" style="width: 15px;" onkeypress="this.style.width = ((this.value.length + 1) * 15) + 'px';" placeholder=""></span></cell>
+                                        <input type="text" name="arg" style="width: 50px;" onkeyup="expand(this);">
                                     </c:if>
                                     <c:if test="${ins.name == 'Label:'}">
-                                        <cell></cell><span> <input name="arg" id="arg" class="form" type="text" style="width: 15px;" onkeypress="this.style.width = ((this.value.length + 1) * 15) + 'px';" placeholder=""></span></cell>:
+                                        <input type="text" name="arg" style="width: 50px;" onkeyup="expand(this);">:
                                     </c:if>
                                 </c:forEach>
                             </c:if>
