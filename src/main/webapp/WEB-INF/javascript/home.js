@@ -17,6 +17,7 @@ function setOutput(data){
 }
 function executeAsm() {
     var arguments = $("#editorList li input[name='arg']").map(function(){return $(this).val();}).get();
+    document.getElementById("output").innerHTML = "";
     $.ajax({
         type: "POST",
         url: "/executeAsm",

@@ -262,13 +262,16 @@ public class UserController {
 
         //assign the new args to instructions
         for (int i = 0; i < selectedInstructions.size(); i++) {
+            System.out.println("New ins--");
             for (int k = 0; k < selectedInstructions.get(i).getArgCount(); k++) {
                 if(skip == i){
                     break;
                 }
+
                 selectedInstructions.get(i).args.add(arguments[count]);
                 count++;
             }
+
         }
 
         return selectedInstructions;

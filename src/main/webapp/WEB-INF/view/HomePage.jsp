@@ -104,6 +104,10 @@
             <p>STORE (1, arg = ACC)</p>
             <p>LOAD (1, ACC=arg)</p>
             <p>NOOP (0, nothing)</p>
+            <p>PUSH (0, tos++)</p>
+            <p>POP (O,tos--)</p>
+            <p>STACKW (1,stack[tos-arg]=ACC)</p>
+            <p>STACKR (1,ACC=stack[tos-arg]</p>
         </div>
 
         <br><br>
